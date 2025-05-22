@@ -195,20 +195,14 @@
         <h2 class="title is-3">Abstract</h2>
         <div class="content has-text-justified">
           <p>
-            Diffusion models are capable of delivering many zero-shot applications in addition to stunning image generation,
-            and style transfer is a popular choice among those applications. In contrast to classical style transfer studies,
-            recent methods harness diffusion models, where decoupling between the source image and content image returns the 
-            stylized image after denoising steps. To further upscale the stylization performance, researchers integrate 
-            prompt guidance, adapters, or ControlNet within their style transfer pipeline. However, the style of an image is
-            always subjective, and it is common for zero-shot diffusion stylization approaches to deliver undesired performances. 
-          </p>
-          <p>
-            For instance, the tradeoff between style injection and content preservation often poses a great challenge, and the resultant
-            stylized image deviates far away from the content image. We address both issues by integrating two efficient contributions: 
-            a) preserving content via dividing and aggregating the self-attention and b) maintaining the impact of style through modulating
-            the attention components. Our approach can provide aesthetically appealing yet content-preserving style transfer performance 
-            through the combined effort of these contributions. Through extensive experimental studies, we validated our approach's qualitative
-            and quantitative performance, and our approach shows a higher benchmark than the concurrent studies.
+            Abstract Diffusion models excel in text-to-image generation and are advancing zero-shot visual tasks like style transfer. 
+            Traditional diffusion-based style transfer relies on self-attention swapping, which struggles to balance content preservation
+            with style injection and prompt alignment. We propose an efficient framework to address these challenges: (1) a novel 
+            template-guided mechanism, using a blended content-style latent to enhance attention interactions for both images and 
+            videos with spatio-temporal coherence, and (2) a zero-cost attention modulation strategy that optimizes self- and 
+            cross-attention components. Our approach delivers superior stylization, ensuring robust content fidelity and style
+            consistency in zero-shot settings. Evaluations demonstrate that our method surpasses state-of-the-art approaches across 
+            diverse benchmarks.
           </p>
         </div>
       </div>
