@@ -250,12 +250,15 @@
         href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
   <link rel="stylesheet" href="./static/css/index.css">
   <link rel="icon" href="./static/images/favicon.png">
+  <!-- Glide.js CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/css/glide.core.min.css">
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script defer src="./static/js/fontawesome.all.min.js"></script> 
   <!--<script src="./static/js/bulma-carousel.min.js"></script> -->
   <script src="./static/js/bulma-slider.min.js"></script>
   <script src="./static/js/index.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/glide.min.js"></script>
 </head>
 <body>
 
@@ -334,60 +337,63 @@
 
 
 <!-- First Carousel -->
- <div class="container" style="text-align: center; ">
-            <h2 class="title is-4" style="text-align: center;">Stylized Video Generation <span
-                    style="color: #4FACFA;">with Different Style Images</span></h2>
+ <!-- Glider -->
+<div class="container" style="margin-bottom: 3rem;" id="container">
+  <div class="teaser">
+    <div class="glide" id="teaser-glide">
+      <div data-glide-el="track" class="glide__track">
+        <ul class="glide__slides">
+          <li class="glide__slide">
+            <video muted loop autoplay defaultMuted playsinline webkit-playsinline class="teaser-video-0">
+              <source src="static/train_2_digitalart.mp4"  type="video/mp4"/>
+            </video>
+          </li>
+          <li class="glide__slide">
+            <video muted loop defaultMuted playsinline webkit-playsinline class="teaser-video-1">
+              <source src="static/dance_anime.mp4" type="video/mp4"/>
+            </video>
+          </li>
+          <li class="glide__slide">
+            <video muted loop defaultMuted playsinline webkit-playsinline class="teaser-video-2">
+              <source src="static/horse_1_scream.mp4" type="video/mp4"/>
+            </video>
+          </li>
+          <li class="glide__slide">
+            <video muted loop defaultMuted playsinline webkit-playsinline class="teaser-video-3">
+              <source src="static/penguin_2_oilpaint_2.mp4" type="video/mp4"/>
+            </video>
+          </li>
+        </ul>
+      </div>
 
-                <div id="results-carousel-horizontal" class="carousel results-carousel">
+      <div class="glide__arrows" data-glide-el="controls">
+        <span class="glide__arrow glide__arrow--left" data-glide-dir="<"><img src="static/images/arrow-left-circle-fill.svg"/></span>
+        <span class="glide__arrow glide__arrow--right" data-glide-dir=">"><img src="static/images/arrow-right-circle-fill.svg"/></span>
+      </div>
+      <div class="glide__bullets" data-glide-el="controls[nav]">
+        <span class="glide__bullet" data-glide-dir="=0"></span>
+        <span class="glide__bullet" data-glide-dir="=1"></span>
+        <span class="glide__bullet" data-glide-dir="=2"></span>
+        <span class="glide__bullet" data-glide-dir="=3"></span>
+      </div>
+    </div>
+  </div>
+</div>
 
-                    <video muted autoplay="autoplay" loop="loop" width="50%" preload controls>
-                        <source src="static/videos/dance_anime.mp4" type="video/mp4">
-                    </video>
-
-                    <video muted autoplay="autoplay" loop="loop" width="50%" preload controls>
-                        <source src="static/videos/dance_anime.mp4" type="video/mp4">
-                    </video>
-
-                    <video muted autoplay="autoplay" loop="loop" width="50%" preload controls>
-                        <source src="static/videos/dance_anime.mp4" type="video/mp4">
-                    </video>
-                    
-                </div>
-        </div>
-
-
+<!-- End Glider -->
 <script>
-  let slideIndex = 0;
-
-  function showSlide(carouselId, index) {
-    const carousel = document.getElementById(carouselId);
-    const videos = carousel.querySelectorAll('video');
-    if (index >= videos.length) slideIndex = 0;
-    if (index < 0) slideIndex = videos.length - 1;
-
-    videos.forEach((video, i) => {
-      video.style.display = (i === slideIndex) ? 'block' : 'none';
-      if (i === slideIndex) {
-        video.play();
-      } else {
-        video.pause();
-        video.currentTime = 0;
-      }
-    });
-  }
-
-  function moveSlide(n, carouselId) {
-    slideIndex += n;
-    showSlide(carouselId, slideIndex);
-  }
-
-  // Initialize carousel
-  document.addEventListener('DOMContentLoaded', () => {
-    showSlide('carousel1', slideIndex);
+  document.addEventListener('DOMContentLoaded', function () {
+    new Glide('#teaser-glide', {
+      type: 'carousel',
+      perView: 1,
+      autoplay: 4000,  // Optional: auto slide every 4 seconds
+      hoverpause: true,
+      animationDuration: 800,
+      animationTimingFunc: 'ease-in-out',
+    }).mount();
   });
 </script>
-
-
+<!--  -->
 
 <!-- Abstract -->
 <section class="section">
