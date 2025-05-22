@@ -341,15 +341,27 @@
     <div class="carousel" id="carousel1">
       <div class="column is-full-width">
         <h2 class="title is-3">Video Stylization</h2>
-        <div class="carousel-images">
-          <img src="static/videos/dance_anime.mp4" alt="Image 1">
-          <img src="static/videos/horse_1_sceam.mp4" alt="Image 2">
-          <img src="static/videos/penguin_2_oilpaint_2.mp4" alt="Image 3">
-          <img src="static/videos/train_2_digitalart.mp4" alt="Image 4">
+        <div class="carousel-videos">
+          <video width="100%" controls>
+            <source src="static/videos/dance_anime.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+          <video width="100%" controls style="display:none;">
+            <source src="static/videos/horse_1_sceam.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+          <video width="100%" controls style="display:none;">
+            <source src="static/videos/penguin_2_oilpaint_2.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+          <video width="100%" controls style="display:none;">
+            <source src="static/videos/train_2_digitalart.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
         </div>
         <br>
-          <span class="dnerf">STAM's</span> image-driven stylization approach. In different visual contents experienced well-structured composition:
-          successfully retents the content details while effectively transferring the color palette and texture from the style image.
+        <span class="dnerf">STAM's</span> image-driven stylization approach. In different visual contents experienced well-structured composition:
+        successfully retains the content details while effectively transferring the color palette and texture from the style image.
         <br/>
         <div class="carousel-controls">
           <span class="carousel-control-prev" onclick="moveSlide(-1, 'carousel1')">&#10094;</span>
@@ -360,6 +372,36 @@
   </div> 
 </section>
 
+<script>
+  let slideIndex = 0;
+
+  function showSlide(carouselId, index) {
+    const carousel = document.getElementById(carouselId);
+    const videos = carousel.querySelectorAll('video');
+    if (index >= videos.length) slideIndex = 0;
+    if (index < 0) slideIndex = videos.length - 1;
+
+    videos.forEach((video, i) => {
+      video.style.display = (i === slideIndex) ? 'block' : 'none';
+      if (i === slideIndex) {
+        video.play();
+      } else {
+        video.pause();
+        video.currentTime = 0;
+      }
+    });
+  }
+
+  function moveSlide(n, carouselId) {
+    slideIndex += n;
+    showSlide(carouselId, slideIndex);
+  }
+
+  // Initialize carousel
+  document.addEventListener('DOMContentLoaded', () => {
+    showSlide('carousel1', slideIndex);
+  });
+</script>
 
 
 
