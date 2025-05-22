@@ -334,43 +334,27 @@
 
 
 <!-- First Carousel -->
-<section class="section"> 
-  <div class="container is-max-desktop">
-    <div class="columns is-centered">
-    </div>
-    <div class="carousel" id="carousel1">
-      <div class="column is-full-width">
-        <h2 class="title is-3">Video Stylization</h2>
-        <div class="carousel-videos">
-          <video width="100%" controls>
-            <source src="static/videos/dance_anime.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-          </video>
-          <video width="100%" controls style="display:none;">
-            <source src="static/videos/horse_1_sceam.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-          </video>
-          <video width="100%" controls style="display:none;">
-            <source src="static/videos/penguin_2_oilpaint_2.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-          </video>
-          <video width="100%" controls style="display:none;">
-            <source src="static/videos/train_2_digitalart.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-          </video>
+ <div class="container" style="text-align: center; ">
+            <h2 class="title is-4" style="text-align: center;">Stylized Video Generation <span
+                    style="color: #4FACFA;">with Different Style Images</span></h2>
+
+                <div id="results-carousel-horizontal" class="carousel results-carousel">
+
+                    <video muted autoplay="autoplay" loop="loop" width="50%" preload controls>
+                        <source src="static/videos/dance_anime.mp4" type="video/mp4">
+                    </video>
+
+                    <video muted autoplay="autoplay" loop="loop" width="50%" preload controls>
+                        <source src="static/videos/dance_anime.mp4" type="video/mp4">
+                    </video>
+
+                    <video muted autoplay="autoplay" loop="loop" width="50%" preload controls>
+                        <source src="static/videos/dance_anime.mp4" type="video/mp4">
+                    </video>
+                    
+                </div>
         </div>
-        <br>
-        <span class="dnerf">STAM's</span> image-driven stylization approach. In different visual contents experienced well-structured composition:
-        successfully retains the content details while effectively transferring the color palette and texture from the style image.
-        <br/>
-        <div class="carousel-controls">
-          <span class="carousel-control-prev" onclick="moveSlide(-1, 'carousel1')">&#10094;</span>
-          <span class="carousel-control-next" onclick="moveSlide(1, 'carousel1')">&#10095;</span>
-        </div>
-      </div>
-    </div>
-  </div> 
-</section>
+
 
 <script>
   let slideIndex = 0;
