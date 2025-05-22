@@ -6,7 +6,224 @@
         content="Deformable Neural Radiance Fields creates free-viewpoint portraits (nerfies) from casually captured videos.">
   <meta name="keywords" content="Nerfies, D-NeRF, NeRF">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Nerfies: Deformable Neural Radiance Fields</title>
+  <title>STAM: Zero-shot Style Transfer using Diffusion Model via Attention Modulation</title>
+
+  <style>
+    .gradient-text {
+      font-size: 48px;
+      font-weight: bold;
+      background: linear-gradient(90deg, #ff7e5f, #feb47b, #86a8e7, #19c0b5, #d061c5);
+      background-size: 500% 800%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-fill-color: transparent;
+      animation: gradientAnimation 7s ease infinite;
+    }
+
+    @keyframes gradientAnimation {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+  </style>
+  <style>
+    .image-popup {
+      overflow: hidden;
+      /* Ensures the enlarged image does not overflow its container */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .image-popup img {
+      transition: transform 0.2s ease, transform-origin 0.2s ease;
+      /* Smooth transition */
+      transform-origin: var(--x) var(--y);
+      /* Use CSS variables */
+    }
+
+    .image-popup img:hover {
+      transform: scale(1.4);
+      /* Enlarge the image on hover */
+    }
+  </style>
+  <style>
+    .custom-image {
+      max-width: 80%;
+      /* Adjust this value to make the image smaller */
+      height: auto;
+      /* Maintain aspect ratio */
+      display: block;
+      margin: 0 auto;
+      /* Center the image within its container */
+    }
+  </style>
+
+  <style>
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(6, 150px);
+      /* 6 columns */
+      grid-template-rows: repeat(4, 150px);
+      /* 4 rows */
+      gap: 10px;
+      position: relative;
+    }
+
+    .gallery-item {
+      width: 150px;
+      height: 150px;
+      perspective: 1000px;
+      position: relative;
+      transition: z-index 0s 0.6s, filter 0.6s;
+      /* Ensure z-index works and add transitions */
+    }
+
+    .flip-card {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.6s;
+    }
+
+    .flip-card-inner {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+    }
+
+    .flip-card-front,
+    .flip-card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .flip-card-front {
+      background-color: #bbb;
+    }
+
+    .flip-card-back {
+      background-color: #2980b9;
+      transform: rotateY(180deg);
+    }
+
+    .gallery-item:hover {
+      z-index: 1;
+      /* Bring hovered item to the top */
+      transition: z-index 0s;
+      /* Immediate z-index change on hover */
+    }
+
+    .gallery-item:hover .flip-card {
+      transform: rotateY(180deg) scale(2.1);
+    }
+
+    .gallery.hover-effect .gallery-item:not(:hover) {
+      filter: blur(6px) brightness(0.6);
+      /* Apply blur and dim effect */
+    }
+
+    .gallery-item:not(:hover) {
+      animation: delayZIndexReset 0.6s forwards;
+    }
+
+    @keyframes delayZIndexReset {
+      0% {
+        z-index: 1;
+      }
+
+      100% {
+        z-index: 0;
+      }
+    }
+
+    .text-box {
+      position: absolute;
+      top: 100%;
+      /* Start at the bottom of the image */
+      left: -20%;
+      width: 140%;
+      padding: 10px;
+      background-color: rgba(14, 14, 14, 0.571);
+      color: #fff;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(-40px) scale(0.5);
+      /* Initial position for the transition */
+      transition: opacity 0.5s, transform 0.4s;
+      box-sizing: border-box;
+      text-shadow: 3px 3px 4px rgba(0, 0, 0, 1);
+      font-weight: bold;
+
+      /* Make the font bold */
+      /* Add text shadow */
+    }
+
+    .gallery-item:hover .text-box {
+      opacity: 1;
+      transform: translateY(0);
+      /* Move to its final position */
+    }
+  </style>
+  
+  <style>
+    .carousel {
+      position: relative;
+      width: 100%;               /* Ensure the carousel takes full width */
+      max-width: 1200px;         /* Adjust the max-width to make it larger */
+      margin: auto;
+      overflow: hidden;          /* Hide overflow to only show one image at a time */
+    }
+
+    .carousel-images {
+      display: flex;
+      transition: transform 0.5s ease;
+    }
+
+    .carousel-images img {
+      width: 100%;               /* Ensure images take up full width of the container */
+      height: auto;              /* Maintain the aspect ratio */
+      object-fit: cover;         /* Ensure images cover the area of the container */
+    }
+
+    .carousel-controls {
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      transform: translateY(-50%);
+    }
+
+    .carousel-control-prev, .carousel-control-next {
+      background-color: rgba(0, 0, 0, 0.5); /* Dark background for visibility */
+      color: white;
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 50%;         /* Optional: to make the buttons round */
+    }
+
+    /* Optionally, add hover effect to the navigation buttons */
+    .carousel-control-prev:hover, .carousel-control-next:hover {
+      background-color: rgba(0, 0, 0, 0.7);
+    }
+</style>
+
 
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
@@ -32,21 +249,15 @@
   <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
   <link rel="stylesheet" href="./static/css/index.css">
-  <link rel="icon" href="./static/images/favicon.svg">
-
-  <link rel="stylesheet" href="static/css/glide.core.min.css">
-  <link rel="stylesheet" href="static/css/glide.theme.min.css">
-  <link rel="stylesheet" href="static/css/glide-custom.css">
+  <link rel="icon" href="./static/images/favicon.png">
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
-  <script defer src="./static/js/fontawesome.all.min.js"></script>
-  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script> 
+  <!--<script src="./static/js/bulma-carousel.min.js"></script> -->
   <script src="./static/js/bulma-slider.min.js"></script>
   <script src="./static/js/index.js"></script>
 </head>
 <body>
-
 
 <section class="hero">
   <div class="hero-body">
@@ -121,171 +332,38 @@
   </div>
 </section>
 
-<!-- Glider -->
-<div class="container" style="margin-bottom: 3rem;" id="container">
-  <div class="teaser">
-    <div class="glide" id="teaser-glide">
-      <div data-glide-el="track" class="glide__track">
-        <ul class="glide__slides">
-          <li class="glide__slide">
-            <video muted loop autoplay defaultMuted playsinline webkit-playsinline class="teaser-video-0">
-              <source src="static/dance_anime.mp4"  type="video/mp4"/>
-            </video>
-          </li>
-          <li class="glide__slide">
-            <video muted loop defaultMuted playsinline webkit-playsinline class="teaser-video-1">
-              <source src="static/horse_1_scream.mp4" type="video/mp4"/>
-            </video>
-          </li>
-          <li class="glide__slide">
-            <video muted loop defaultMuted playsinline webkit-playsinline class="teaser-video-2">
-              <source src="static/penguin_2_oilpaint_2.mp4" type="video/mp4"/>
-            </video>
-          </li>
-          <li class="glide__slide">
-            <video muted loop defaultMuted playsinline webkit-playsinline class="teaser-video-3">
-              <source src="static/train_2_digitalart.mp4" type="video/mp4"/>
-            </video>
-          </li>
-        </ul>
-      </div>
 
-      <div class="glide__arrows" data-glide-el="controls">
-        <span class="glide__arrow glide__arrow--left" data-glide-dir="<"><img src="static/images/arrow-left-circle-fill.svg"/></span>
-        <span class="glide__arrow glide__arrow--right" data-glide-dir=">"><img src="static/images/arrow-right-circle-fill.svg"/></span>
-      </div>
-      <div class="glide__bullets" data-glide-el="controls[nav]">
-        <span class="glide__bullet" data-glide-dir="=0"></span>
-        <span class="glide__bullet" data-glide-dir="=1"></span>
-        <span class="glide__bullet" data-glide-dir="=2"></span>
-        <span class="glide__bullet" data-glide-dir="=3"></span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- End Glider -->
- <section class="section" style="margin-top: 0; padding-top: 50px;">
-       <div class="container" style="text-align: center; ">
-           <h2 class="title is-4" style="text-align: center;">Comparison with Stylized Video Generation Methods</h2>
-            <div id="cmp-gt-carousel-horizontal" class="carousel results-carousel">
-                <video muted autoplay="autoplay" loop="loop" width="80%" preload controls>
-                    <source src="./video/video_com.mp4" type="video/mp4">
-                </video>
-            </div>
-        </div>
-
-        <br>
-
-        <div class="hero-body">
-            <div class="container" style="text-align: center; ">
-                <h2 class="title is-4" style="text-align: center;">Video Style Transfer <span
-                        style="color: #4FACFA;">with Different Styles</span> </h2>
-                <div id="results-carousel-horizontal" class="carousel results-carousel">
-                    <video muted autoplay="autoplay" loop="loop" width="50%" preload controls>
-                        <source src="static/train_2_digitalart.mp4" type="video/mp4">
-                    </video>
-                    
-                    <video muted autoplay="autoplay" loop="loop" width="70%" preload controls>
-                        <source src="static/train_2_digitalart.mp4" type="video/mp4">
-                    </video>
-
-                    
-
-                    <video muted autoplay="autoplay" loop="loop" width="70%" preload controls>
-                        <source src="static/train_2_digitalart.mp4" type="video/mp4">
-                    </video>
-
-                    
-                </div>
-
-
-            </div>
-        </div>
-
-
-<!-- Paper abstract -->
-<section class="section hero is-light">
+<!-- First Carousel -->
+<section class="section"> 
   <div class="container is-max-desktop">
-    <div class="columns is-centered has-text-centered">
-      <div class="column is-four-fifths" style="width: 100%;">
-        <h2 class="title is-3 hr-lines">Abstract</h2>
-        <div class="content has-text-justified">
-          <p>
-            Diffusion models excel in text-to-image generation and are advancing zero-shot visual tasks like style transfer.
-            Traditional diffusion-based style transfer relies on self-attention swapping, which struggles to balance content
-            preservation with style injection and prompt alignment. We propose an efficient framework to address these challenges:
-            (1) a novel template-guided mechanism, using a blended content-style latent to enhance attention interactions for both 
-            images and videos with spatio-temporal coherence, and (2) a zero-cost attention modulation strategy that optimizes self- 
-            and cross-attention components. Our approach delivers superior stylization, ensuring robust content fidelity and style 
-            consistency in zero-shot settings. Evaluations demonstrate that our method surpasses state-of-the-art approaches across 
-            diverse benchmarks.
-          </p>
+    <div class="columns is-centered">
+    </div>
+    <div class="carousel" id="carousel1">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Video Stylization</h2>
+        <div class="carousel-images">
+          <img src="static/videos/dance_anime.mp4" alt="Image 1">
+          <img src="static/videos/horse_1_sceam.mp4" alt="Image 2">
+          <img src="static/videos/penguin_2_oilpaint_2.mp4" alt="Image 3">
+          <img src="static/videos/train_2_digitalart.mp4" alt="Image 4">
+        </div>
+        <br>
+          <span class="dnerf">STAM's</span> image-driven stylization approach. In different visual contents experienced well-structured composition:
+          successfully retents the content details while effectively transferring the color palette and texture from the style image.
+        <br/>
+        <div class="carousel-controls">
+          <span class="carousel-control-prev" onclick="moveSlide(-1, 'carousel1')">&#10094;</span>
+          <span class="carousel-control-next" onclick="moveSlide(1, 'carousel1')">&#10095;</span>
         </div>
       </div>
     </div>
-  </div>
-</section>
-<!-- End paper abstract -->
-
-<section class="hero is-light is-small">
-  <div class="hero-body">
-    <div class="container">
-      <div id="results-carousel" class="carousel results-carousel">
-        <div class="item item-steve">
-          <video poster="" id="steve" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/steve.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-chair-tp">
-          <video poster="" id="chair-tp" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/chair-tp.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-shiba">
-          <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/shiba.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-fullbody">
-          <video poster="" id="fullbody" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/fullbody.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-blueshirt">
-          <video poster="" id="blueshirt" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/blueshirt.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-mask">
-          <video poster="" id="mask" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/mask.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-coffee">
-          <video poster="" id="coffee" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/coffee.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-toby">
-          <video poster="" id="toby" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/toby2.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-      </div>
-    </div>
-  </div>
+  </div> 
 </section>
 
 
+
+
+<!-- Abstract -->
 <section class="section">
   <div class="container is-max-desktop">
     <!-- Abstract. -->
@@ -294,233 +372,627 @@
         <h2 class="title is-3">Abstract</h2>
         <div class="content has-text-justified">
           <p>
-            We present the first method capable of photorealistically reconstructing a non-rigidly
-            deforming scene using photos/videos captured casually from mobile phones.
+            Diffusion models are capable of delivering many zero-shot applications in addition to stunning image generation,
+            and style transfer is a popular choice among those applications. In contrast to classical style transfer studies,
+            recent methods harness diffusion models, where decoupling between the source image and content image returns the 
+            stylized image after denoising steps. To further upscale the stylization performance, researchers integrate 
+            prompt guidance, adapters, or ControlNet within their style transfer pipeline. However, the style of an image is
+            always subjective, and it is common for zero-shot diffusion stylization approaches to deliver undesired performances. 
           </p>
           <p>
-            Our approach augments neural radiance fields
-            (NeRF) by optimizing an
-            additional continuous volumetric deformation field that warps each observed point into a
-            canonical 5D NeRF.
-            We observe that these NeRF-like deformation fields are prone to local minima, and
-            propose a coarse-to-fine optimization method for coordinate-based models that allows for
-            more robust optimization.
-            By adapting principles from geometry processing and physical simulation to NeRF-like
-            models, we propose an elastic regularization of the deformation field that further
-            improves robustness.
-          </p>
-          <p>
-            We show that <span class="dnerf">Nerfies</span> can turn casually captured selfie
-            photos/videos into deformable NeRF
-            models that allow for photorealistic renderings of the subject from arbitrary
-            viewpoints, which we dub <i>"nerfies"</i>. We evaluate our method by collecting data
-            using a
-            rig with two mobile phones that take time-synchronized photos, yielding train/validation
-            images of the same pose at different viewpoints. We show that our method faithfully
-            reconstructs non-rigidly deforming scenes and reproduces unseen views with high
-            fidelity.
+            For instance, the tradeoff between style injection and content preservation often poses a great challenge, and the resultant
+            stylized image deviates far away from the content image. We address both issues by integrating two efficient contributions: 
+            a) preserving content via dividing and aggregating the self-attention and b) maintaining the impact of style through modulating
+            the attention components. Our approach can provide aesthetically appealing yet content-preserving style transfer performance 
+            through the combined effort of these contributions. Through extensive experimental studies, we validated our approach's qualitative
+            and quantitative performance, and our approach shows a higher benchmark than the concurrent studies.
           </p>
         </div>
       </div>
     </div>
     <!--/ Abstract. -->
 
-    <!-- Paper video. -->
-    <div class="columns is-centered has-text-centered">
-      <div class="column is-four-fifths">
-        <h2 class="title is-3">Video</h2>
-        <div class="publication-video">
-          <iframe src="https://www.youtube.com/embed/MrKrnHhk8IA?rel=0&amp;showinfo=0"
-                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
+<!-- Method -->
+<section class="section">
+    <div class="container is-max-desktop">
+
+      <div class="columns is-centered">
+
+      </div>
+      <!--/ Avatar Creation. -->
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3">Method overview</h2>
+          <!-- Figure here -->
+          <div class="columns is-vcentered interpolation-panel">
+            <img class="links-cover" src="static/main_framework.png" alt="Method Overview", width="100%">
+          </div>
+          <!-- Text below the figure -->
+          <h4 class="subtitle has-text-justified"> <span class="dnerf">STAM's</span> style transfer approach. On the rightmost part of the diagram, we display three sub-blocks, 
+          where we briefly display the underlying mechanics of the proposed aggregated attention, attention swapping, and modulation of the attention components. 
+          Note that we do not show the full details of the attention modulation here for brevity,
+          and we denote Q<sub>s</sub> as Q<sub>s</sub><sup>*</sup> to indicate the completion of the appropriate transformation.</h4>
+          <br />
         </div>
       </div>
-    </div>
-    <!--/ Paper video. -->
-  </div>
-</section>
+  </section>
 
+<!-- Method end -->
+
+<!-- Additional Performances -->
 
 <section class="section">
-  <div class="container is-max-desktop">
+    <div class="container is-max-desktop">
 
-    <div class="columns is-centered">
+      <div class="columns is-centered">
 
-      <!-- Visual Effects. -->
-      <div class="column">
-        <div class="content">
-          <h2 class="title is-3">Visual Effects</h2>
-          <p>
-            Using <i>nerfies</i> you can create fun visual effects. This Dolly zoom effect
-            would be impossible without nerfies since it would require going through a wall.
-          </p>
-          <video id="dollyzoom" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/dollyzoom-stacked.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
       </div>
-      <!--/ Visual Effects. -->
 
-      <!-- Matting. -->
-      <div class="column">
-        <h2 class="title is-3">Matting</h2>
-        <div class="columns is-centered">
-          <div class="column content">
-            <p>
-              As a byproduct of our method, we can also solve the matting problem by ignoring
-              samples that fall outside of a bounding box during rendering.
-            </p>
-            <video id="matting-video" controls playsinline height="100%">
-              <source src="./static/videos/matting.mp4"
-                      type="video/mp4">
-            </video>
-          </div>
+      <!-- Articulation. -->
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3">More Text-driven Results</h2>
+          <div class="gallery is-centered">
+            <!-- Repeat this block for each image pair in the 4x6 grid -->
+            <div class="gallery-item" data-front="static/images/busy_town.png"
+              data-back="static/images/town_comic_pix (1).png">
+              <div class="flip-card">
+                <div class="flip-card-inner flip-card-front"
+                  style="background-image: url('static/images/busy_town.png');">
+                </div>
+                <div class="flip-card-inner flip-card-back" style="background-image: url('static/images/town_comic_pix (1).png');">
+                </div>
 
-        </div>
-      </div>
-    </div>
-    <!--/ Matting. -->
-
-    <!-- Animation. -->
-    <div class="columns is-centered">
-      <div class="column is-full-width">
-        <h2 class="title is-3">Animation</h2>
-
-        <!-- Interpolating. -->
-        <h3 class="title is-4">Interpolating states</h3>
-        <div class="content has-text-justified">
-          <p>
-            We can also animate the scene by interpolating the deformation latent codes of two input
-            frames. Use the slider here to linearly interpolate between the left frame and the right
-            frame.
-          </p>
-        </div>
-        <div class="columns is-vcentered interpolation-panel">
-          <div class="column is-3 has-text-centered">
-            <img src="./static/images/interpolate_start.jpg"
-                 class="interpolation-image"
-                 alt="Interpolate start reference image."/>
-            <p>Start Frame</p>
-          </div>
-          <div class="column interpolation-video-column">
-            <div id="interpolation-image-wrapper">
-              Loading...
+              </div>
+              <div class="text-box">American comic, western style, detailed.</div>
             </div>
-            <input class="slider is-fullwidth is-large is-info"
-                   id="interpolation-slider"
-                   step="1" min="0" max="100" value="0" type="range">
+
+
+            <div class="gallery-item" data-front="static/images/hurricane.png"
+              data-back="static/images/add_text/STAM_tera.png">
+              <div class="flip-card">
+                <div class="flip-card-inner flip-card-front"
+                  style="background-image: url('static/images/hurricane.png');">
+                </div>
+                <div class="flip-card-inner flip-card-back" style="background-image: url('static/images/STAM_tera.png');">
+                </div>
+
+              </div>
+              <div class="text-box">Terracotta art style.</div>
+            </div>
+
+
+            <div class="gallery-item" data-front="static/images/horse_input.png"
+              data-back="static/images/gallery/horse_ours.png">
+              <div class="flip-card">
+                <div class="flip-card-inner flip-card-front"
+                  style="background-image: url('static/images/horse_input.png');">
+                </div>
+                <div class="flip-card-inner flip-card-back" style="background-image: url('static/images/horse_ours.png');">
+                </div>
+
+              </div>
+              <div class="text-box">American comic, western style, detailed.</div>
+            </div>
+
+
+
+
+            <div class="gallery-item" data-front="static/images/9.png"
+              data-back="static/images/rococo.png">
+              <div class="flip-card">
+                <div class="flip-card-inner flip-card-front"
+                  style="background-image: url('static/images/9.png');">
+                </div>
+                <div class="flip-card-inner flip-card-back" style="background-image: url('static/images/loading.png');">
+                </div>
+
+              </div>
+              <div class="text-box">Rococo painting.</div>
+            </div>
+
+
+            <div class="gallery-item" data-front="static/images/39.png"
+              data-back="static/images/renaissance.png">
+              <div class="flip-card">
+                <div class="flip-card-inner flip-card-front"
+                  style="background-image: url('static/images/39.png');">
+                </div>
+                <div class="flip-card-inner flip-card-back" style="background-image: url('static/images/loading.png');">
+                </div>
+
+              </div>
+              <div class="text-box">A Renaissance painting, detailed, traditional.</div>
+            </div>
+
+
+            <div class="gallery-item" data-front="static/images/12.png"
+              data-back="static/images/cubism_1.png">
+              <div class="flip-card">
+                <div class="flip-card-inner flip-card-front"
+                  style="background-image: url('static/images/12.png');">
+                </div>
+                <div class="flip-card-inner flip-card-back" style="background-image: url('static/images/loading.png');">
+                </div>
+
+              </div>
+              <div class="text-box">An abstract cubism painting, geometric shapes.</div>
+            </div>
+
+
+            <div class="gallery-item" data-front="static/images/62.png"
+              data-back="static/images/inkwash_1.png">
+              <div class="flip-card">
+                <div class="flip-card-inner flip-card-front"
+                  style="background-image: url('static/images/62.png');">
+                </div>
+                <div class="flip-card-inner flip-card-back" style="background-image: url('static/images/loading.png');">
+                </div>
+
+              </div>
+              <div class="text-box">A ink-wash watercolor painting.</div>
+            </div>
+
+            <div class="gallery-item" data-front="static/images/vase_input.png"
+              data-back="static/images/vase_ours.png">
+              <div class="flip-card">
+                <div class="flip-card-inner flip-card-front"
+                  style="background-image: url('static/images/vase_input.png');">
+                </div>
+                <div class="flip-card-inner flip-card-back" style="background-image: url('static/images/vase_ours.png');">
+                </div>
+
+              </div>
+              <div class="text-box">A fauvist painting, vivid colors.</div>
+            </div>
+
+            <div class="gallery-item" data-front="static/images/chn.jpg"
+              data-back="static/images/chn_sketch.png">
+              <div class="flip-card">
+                <div class="flip-card-inner flip-card-front"
+                  style="background-image: url('static/images/chn.jpg');">
+                </div>
+                <div class="flip-card-inner flip-card-back" style="background-image: url('static/images/loading.png');">
+                </div>
+
+              </div>
+              <div class="text-box">Pencil-sketch, detailed cross-hatching.</div>
+            </div>
+
+
+            <div class="gallery-item" data-front="static/images/76.png"
+              data-back="static/images/impressionism.png">
+              <div class="flip-card">
+                <div class="flip-card-inner flip-card-front"
+                  style="background-image: url('static/images/76.png');">
+                </div>
+                <div class="flip-card-inner flip-card-back" style="background-image: url('static/images/loading.png');">
+                </div>
+
+              </div>
+              <div class="text-box">An impressionism painting, claude monet, vibrant color</div>
+            </div>
+
+            <div class="gallery-item" data-front="static/images/79.png"
+              data-back="static/images/traditional_watercolor.png">
+              <div class="flip-card">
+                <div class="flip-card-inner flip-card-front"
+                  style="background-image: url('static/images/79.png');">
+                </div>
+                <div class="flip-card-inner flip-card-back" style="background-image: url('static/images/loading.png');">
+                </div>
+
+              </div>
+              <div class="text-box">A traditional watercolor painting, colorful</div>
+
+            </div>
+
+            <div class="gallery-item" data-front="static/images/29.png"
+              data-back="static/images/neoexpressionism.png">
+              <div class="flip-card">
+                <div class="flip-card-inner flip-card-front"
+                  style="background-image: url('static/images/29.png');">
+                </div>
+                <div class="flip-card-inner flip-card-back" style="background-image: url('static/images/loading.png');">
+                </div>
+
+              </div>
+              <div class="text-box">A neo-expressionism painting, detailed brush strokes</div>
+            </div>
+
+            <div class="gallery-item" data-front="static/images/59.png"
+              data-back="static/images/pixel_art.png">
+              <div class="flip-card">
+                <div class="flip-card-inner flip-card-front"
+                  style="background-image: url('static/images/59.png');">
+                </div>
+                <div class="flip-card-inner flip-card-back" style="background-image: url('static/images/loading.png');">
+                </div>
+
+              </div>
+              <div class="text-box">A pixel art painting, detailed, 8-bit</div>
+
+            </div>
+
+            <div class="gallery-item" data-front="static/images/1.png"
+              data-back="static/images/fauvist_1.png">
+              <div class="flip-card">
+                <div class="flip-card-inner flip-card-front"
+                  style="background-image: url('static/images/1.png');">
+                </div>
+                <div class="flip-card-inner flip-card-back" style="background-image: url('static/images/loading.png');">
+                </div>
+
+              </div>
+              <div class="text-box">A fauvist painting, vivid colors</div>
+
+            </div>
+
+            <div class="gallery-item" data-front="static/images/41.png"
+              data-back="static/images/cubist.png">
+              <div class="flip-card">
+                <div class="flip-card-inner flip-card-front"
+                  style="background-image: url('static/images/41.png');">
+                </div>
+                <div class="flip-card-inner flip-card-back" style="background-image: url('static/images/loading.png');">
+                </div>
+
+              </div>
+              <div class="text-box">An abstract cubist painting, geometric shapes</div>
+
+            </div>
+
+            <div class="gallery-item" data-front="static/images/49.png"
+              data-back="static/images/edward_munch.png">
+              <div class="flip-card">
+                <div class="flip-card-inner flip-card-front"
+                  style="background-image: url('static/images/49.png');">
+                </div>
+                <div class="flip-card-inner flip-card-back" style="background-image: url('static/images/loading.png');">
+                </div>
+
+              </div>
+              <div class="text-box">painting by Edward Munch.</div>
+
+            </div>
+
+            <div class="gallery-item" data-front="static/images/42.png"
+              data-back="static/images/pixel_art_1.png">
+              <div class="flip-card">
+                <div class="flip-card-inner flip-card-front"
+                  style="background-image: url('static/images/42.png');">
+                </div>
+                <div class="flip-card-inner flip-card-back" style="background-image: url('static/images/loading.png');">
+                </div>
+
+              </div>
+              <div class="text-box">A pixel art painting, detailed, 8-bit.</div>
+
+            </div>
+
+            <div class="gallery-item" data-front="static/images/2.png"
+              data-back="static/images/chess_vangogh.png">
+              <div class="flip-card">
+                <div class="flip-card-inner flip-card-front"
+                  style="background-image: url('static/images/2.png');">
+                </div>
+                <div class="flip-card-inner flip-card-back" style="background-image: url('static/images/loading.png');">
+                </div>
+
+              </div>
+              <div class="text-box">Starry night art by Vincent Van-gogh.</div>
+
+            </div>
+
+            <div class="gallery-item" data-front="static/images/18.png"
+              data-back="static/images/dadaism.png">
+              <div class="flip-card">
+                <div class="flip-card-inner flip-card-front"
+                  style="background-image: url('static/images/18.png');">
+                </div>
+                <div class="flip-card-inner flip-card-back" style="background-image: url('static/images/loading.png');">
+                </div>
+
+              </div>
+              <div class="text-box">Dadaism style art.</div>
+            </div>
+
+            <div class="gallery-item" data-front="static/images/bus_input.png"
+              data-back="static/images/bus_ours.png">
+              <div class="flip-card">
+                <div class="flip-card-inner flip-card-front"
+                  style="background-image: url('static/images/bus_input.png');">
+                </div>
+                <div class="flip-card-inner flip-card-back" style="background-image: url('static/images/loading.png');">
+                </div>
+
+              </div>
+              <div class="text-box">A starry night-style painting, by Van Gogh.</div>
+
+            </div>
+
+            <div class="gallery-item" data-front="static/images/tower.jpg"
+              data-back="static/images/tower_BW.png">
+              <div class="flip-card">
+                <div class="flip-card-inner flip-card-front"
+                  style="background-image: url('static/images/tower.jpg');">
+                </div>
+                <div class="flip-card-inner flip-card-back" style="background-image: url('static/images/loading.png');">
+                </div>
+
+              </div>
+              <div class="text-box">A B&W line art drawing, bold lines.</div>
+
+            </div>
+
+            <div class="gallery-item" data-front="static/images/78.png"
+              data-back="static/images/impressionism_1.png">
+              <div class="flip-card">
+                <div class="flip-card-inner flip-card-front"
+                  style="background-image: url('static/images/78.png');">
+                </div>
+                <div class="flip-card-inner flip-card-back" style="background-image: url('static/images/loading.png');">
+                </div>
+
+              </div>
+              <div class="text-box">An impressionism painting, claude monet, vibrant color.</div>
+
+            </div>
+
+            <div class="gallery-item" data-front="static/images/horse.jpg"
+              data-back="static/images/horse_emb.png">
+              <div class="flip-card">
+                <div class="flip-card-inner flip-card-front"
+                  style="background-image: url('static/images/horse.jpg');">
+                </div>
+                <div class="flip-card-inner flip-card-back" style="background-image: url('static/images/loading.png');">
+                </div>
+
+              </div>
+              <div class="text-box">Embroidery art style, lightly woven</div>
+
+            </div>
+
+            <div class="gallery-item" data-front="static/images/38.png"
+              data-back="static/images/traditional_watercolor_1.png">
+              <div class="flip-card">
+                <div class="flip-card-inner flip-card-front"
+                  style="background-image: url('static/images/38.png');">
+                </div>
+                <div class="flip-card-inner flip-card-back" style="background-image: url('static/images/loading.png');">
+                </div>
+
+              </div>
+              <div class="text-box">A traditional watercolor painting, colorful.</div>
+
+            </div>
+            <br />
           </div>
-          <div class="column is-3 has-text-centered">
-            <img src="./static/images/interpolate_end.jpg"
-                 class="interpolation-image"
-                 alt="Interpolation end reference image."/>
-            <p class="is-bold">End Frame</p>
-          </div>
-        </div>
-        <br/>
-        <!--/ Interpolating. -->
 
-        <!-- Re-rendering. -->
-        <h3 class="title is-4">Re-rendering the input video</h3>
-        <div class="content has-text-justified">
-          <p>
-            Using <span class="dnerf">Nerfies</span>, you can re-render a video from a novel
-            viewpoint such as a stabilized camera by playing back the training deformations.
-          </p>
-        </div>
-        <div class="content has-text-centered">
-          <video id="replay-video"
-                 controls
-                 muted
-                 preload
-                 playsinline
-                 width="75%">
-            <source src="./static/videos/replay.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <!--/ Re-rendering. -->
-
-      </div>
-    </div>
-    <!--/ Animation. -->
+  </section>
 
 
-    <!-- Concurrent Work. -->
+
+
+<!-- First Carousel -->
+<section class="section"> 
+  <div class="container is-max-desktop">
     <div class="columns is-centered">
+    </div>
+    <div class="carousel" id="carousel1">
       <div class="column is-full-width">
-        <h2 class="title is-3">Related Links</h2>
-
-        <div class="content has-text-justified">
-          <p>
-            There's a lot of excellent work that was introduced around the same time as ours.
-          </p>
-          <p>
-            <a href="https://arxiv.org/abs/2104.09125">Progressive Encoding for Neural Optimization</a> introduces an idea similar to our windowed position encoding for coarse-to-fine optimization.
-          </p>
-          <p>
-            <a href="https://www.albertpumarola.com/research/D-NeRF/index.html">D-NeRF</a> and <a href="https://gvv.mpi-inf.mpg.de/projects/nonrigid_nerf/">NR-NeRF</a>
-            both use deformation fields to model non-rigid scenes.
-          </p>
-          <p>
-            Some works model videos with a NeRF by directly modulating the density, such as <a href="https://video-nerf.github.io/">Video-NeRF</a>, <a href="https://www.cs.cornell.edu/~zl548/NSFF/">NSFF</a>, and <a href="https://neural-3d-video.github.io/">DyNeRF</a>
-          </p>
-          <p>
-            There are probably many more by the time you are reading this. Check out <a href="https://dellaert.github.io/NeRF/">Frank Dellart's survey on recent NeRF papers</a>, and <a href="https://github.com/yenchenlin/awesome-NeRF">Yen-Chen Lin's curated list of NeRF papers</a>.
-          </p>
+        <h2 class="title is-3">Image driven stylization</h2>
+        <div class="carousel-images">
+          <img src="static/images/image_driven3.png" alt="Image 1">
+          <img src="static/images/image_driven1.png" alt="Image 2">
+          <img src="static/images/image_driven2.png" alt="Image 3">
+          <img src="static/images/image_driven4.png" alt="Image 4">
+        </div>
+        <br>
+          <span class="dnerf">STAM's</span> image-driven stylization approach. In different visual contents experienced well-structured composition:
+          successfully retents the content details while effectively transferring the color palette and texture from the style image.
+        <br/>
+        <div class="carousel-controls">
+          <span class="carousel-control-prev" onclick="moveSlide(-1, 'carousel1')">&#10094;</span>
+          <span class="carousel-control-next" onclick="moveSlide(1, 'carousel1')">&#10095;</span>
         </div>
       </div>
     </div>
-    <!--/ Concurrent Work. -->
-
-  </div>
+  </div> 
 </section>
 
 
-<section class="section" id="BibTeX">
-  <div class="container is-max-desktop content">
-    <h2 class="title">BibTeX</h2>
-    <pre><code>@article{park2021nerfies,
-  author    = {Park, Keunhong and Sinha, Utkarsh and Barron, Jonathan T. and Bouaziz, Sofien and Goldman, Dan B and Seitz, Steven M. and Martin-Brualla, Ricardo},
-  title     = {Nerfies: Deformable Neural Radiance Fields},
-  journal   = {ICCV},
-  year      = {2021},
-}</code></pre>
-  </div>
+
+
+          
+   <!-- Second Carousel -->
+<section class="section"> 
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+    </div>
+    <div class="carousel" id="carousel2">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Text-driven style alignment</h2>
+        <div class="carousel-images">
+          <img src="static/images/ablation_munch.png" alt="Toy Car">
+          <img src="static/images/ablation_origami_1.png" alt="Teddy Bear">
+          <img src="static/images/starry_night.png" alt="Toy Car">
+        </div>
+        <br>
+            <span class="dnerf">STAM's</span> can also utilize the T2I models for generating images with identical styles. For a given prompt, our approach can direct the given diffusion model 
+            to generate images fashioned by the input style prompt.
+        <br/>
+        <div class="carousel-controls">
+          <span class="carousel-control-prev" onclick="moveSlide(-1, 'carousel2')">&#10094;</span>
+          <span class="carousel-control-next" onclick="moveSlide(1, 'carousel2')">&#10095;</span>
+        </div>
+      </div>
+    </div>
+  </div> 
 </section>
+
+
+
+  <!-- Second Carousel -->
+<section class="section"> 
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+      </div>
+      <div class="carousel" id="carousel3">
+        <div class="column is-full-width">
+          <h2 class="title is-3">Style vs Content</h2>
+          <div class="carousel-images">
+            <img src="static/images/stylevscontent_1.png" alt="Toy Car">
+            <img src="static/images/stylevscontent_2.png" alt="Teddy Bear">
+          </div>
+          <br>
+            <span class="dnerf">STAM's</span> performance of content preservation vs stylization compared to other methods. 
+          <br/>
+          <div class="carousel-controls">
+            <span class="carousel-control-prev" onclick="moveSlide(-1, 'carousel3')">&#10094;</span>
+            <span class="carousel-control-next" onclick="moveSlide(1, 'carousel3')">&#10095;</span>
+          </div>
+        </div>
+      </div>
+    </div> 
+  </section>
+  
+
+
+
+<!-- Javascript code for corousal -->  
+<script>
+    // Initialize the current index for each carousel
+    let currentIndex1 = 0;
+    let currentIndex2 = 0;
+    let currentIndex3 = 0;
+  
+    // Function to move the slide for the specific carousel
+    function moveSlide(direction, carouselId) {
+      const carousel = document.getElementById(carouselId);
+      const slides = carousel.querySelector('.carousel-images');
+      const totalSlides = slides.children.length;
+  
+    // Determine which carousel's current index to update
+    let currentIndex = carouselId === 'carousel1' ? currentIndex1 :
+                       carouselId === 'carousel2' ? currentIndex2 :
+                       currentIndex3;
+  
+      // Update the index with circular behavior
+      currentIndex = (currentIndex + direction + totalSlides) % totalSlides;
+      const offset = -currentIndex * 100;
+      slides.style.transform = `translateX(${offset}%)`;
+  
+      // Save the updated index
+    if (carouselId === 'carousel1') {
+      currentIndex1 = currentIndex;
+    } else if (carouselId === 'carousel2') {
+      currentIndex2 = currentIndex;
+    } else {
+      currentIndex3 = currentIndex;
+    }
+  }
+  </script>
 
 
 <footer class="footer">
-  <div class="container">
-    <div class="content has-text-centered">
-      <a class="icon-link"
-         href="./static/videos/nerfies_paper.pdf">
-        <i class="fas fa-file-pdf"></i>
-      </a>
-      <a class="icon-link" href="https://github.com/keunhong" class="external-link" disabled>
-        <i class="fab fa-github"></i>
-      </a>
-    </div>
-    <div class="columns is-centered">
-      <div class="column is-8">
-        <div class="content">
-          <p>
-            This website is licensed under a <a rel="license"
-                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
-            Commons Attribution-ShareAlike 4.0 International License</a>.
-          </p>
-          <p>
-            This means you are free to borrow the <a
-              href="https://github.com/nerfies/nerfies.github.io">source code</a> of this website,
-            we just ask that you link back to this page in the footer.
-            Please remember to remove the analytics code included in the header of the website which
-            you do not want on your website.
-          </p>
+    <div class="container">
+      <div class="content has-text-centered">
+        <a class="icon-link" href="https://arxiv.org/abs/2407.15842">
+          <i class="fas fa-file-pdf"></i>
+        </a>
+        <a class="icon-link" href="https://github.com/songrise" class="external-link" disabled>
+          <i class="fab fa-github"></i>
+        </a>
+      </div>
+      <div class="columns has-text-centered">
+        <div class="column is-8">
+          <div class="content">
+            <p>
+              This website is based on the template from <a href="https://github.com/nerfies/nerfies.github.io">
+                Nerfies</a>
+            </p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</footer>
+  </footer>
+
+
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const imagePopup = document.querySelector('.image-popup img');
+
+      imagePopup.addEventListener('mousemove', function (event) {
+        const rect = imagePopup.getBoundingClientRect();
+        const mouseX = event.clientX - rect.left;
+        const mouseY = event.clientY - rect.top;
+
+        // Calculate the transform-origin in percentage
+        let xPercent = (mouseX / rect.width) * 100;
+        let yPercent = (mouseY / rect.height) * 100;
+
+        // Define the boundaries
+        const lowerBoundary = 25; // 1/4 of 100
+        const upperBoundary = 75; // 3/4 of 100
+
+        // Map the mouse position to the new range
+        if (xPercent < lowerBoundary) {
+          xPercent = 0; // Map to 0%
+        } else if (xPercent > upperBoundary) {
+          xPercent = 100; // Map to 100%
+        } else {
+          xPercent = ((xPercent - lowerBoundary) / (upperBoundary - lowerBoundary)) * 100;
+        }
+
+        if (yPercent < lowerBoundary) {
+          yPercent = 0; // Map to 0%
+        } else if (yPercent > upperBoundary) {
+          yPercent = 100; // Map to 100%
+        } else {
+          yPercent = ((yPercent - lowerBoundary) / (upperBoundary - lowerBoundary)) * 100;
+        }
+
+        // Update CSS variables
+        imagePopup.style.setProperty('--x', `${xPercent}%`);
+        imagePopup.style.setProperty('--y', `${yPercent}%`);
+      });
+    });
+  </script>
+
+<script>
+    const gallery = document.querySelector('.gallery');
+    const items = gallery.querySelectorAll('.gallery-item');
+
+    items.forEach(item => {
+      item.addEventListener('mouseenter', function () {
+        // Add hover-effect class to the gallery
+        gallery.classList.add('hover-effect');
+
+        // Replace the placeholder with the actual image
+        const frontImage = this.getAttribute('data-front');
+        const backImage = this.getAttribute('data-back');
+        const frontElement = this.querySelector('.flip-card-front');
+        const backElement = this.querySelector('.flip-card-back');
+
+        if (frontElement.style.backgroundImage === 'url("static/images/loading.png")') {
+          frontElement.style.backgroundImage = `url(${frontImage})`;
+        }
+        if (backElement.style.backgroundImage === 'url("static/images/loading.png")') {
+          backElement.style.backgroundImage = `url(${backImage})`;
+        }
+      });
+
+      item.addEventListener('mouseleave', function () {
+        // Remove hover-effect class from the gallery
+        gallery.classList.remove('hover-effect');
+      });
+    });
+  </script>
+
+
 
 </body>
-</html>
+</html
